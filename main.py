@@ -1,11 +1,12 @@
 import time
+from astropy.stats import SigmaClip #optional but great!
+import json
+import serial
+#dont forget these libraries
 import numpy as np
 from PIL import Image, ImageEnhance
 import os
-from astropy.stats import SigmaClip
 from scipy.ndimage import gaussian_filter
-import json
-import serial
 
 class sky:
     def __init__(self, path, save_path, number, baudrate, port):
@@ -28,7 +29,7 @@ class sky:
             return False
     
     def transfer(self, mobile_path):
-         os.system("adb pull " + mobile_path + " " + self.path)
+         os.system("adb pull " + mobile_path + " " + self.path) #this might vary
          print("Successfully transfered the files!")
     
     def click(self):
@@ -102,16 +103,17 @@ class sky:
             result.save(save_file_path)
 
             print(f"Enhanced stacked image saved to: {save_file_path}")
-image = sky(r"E:\Rajendra sir backup\Old PC\Backup 2025-1-13\Desktop\Mine\Others\Scripts\sky\unchanged", 
-            r"E:\Rajendra sir backup\Old PC\Backup 2025-1-13\Desktop\Mine\Others\Scripts\sky\changed", 
+image = sky(r"your_path", 
+            r"your_path", 
             14, 9600, 'COM4')
-# image.serial_w(0)
+image.serial_w(0)
 
-# while not image.initialize():
-#     image.serial_w(1)
-#     image.click()
-#     time.sleep(20)
+while not image.initialize():
+    image.serial_w(1)
+    image.click()
+    image.transfer("your_mobile_path")
+    time.sleep(35) #adjust it according to your shutter speed Pro tip make this delay 3 seconds more than the shutter speed you are using
 
-# image.serial_w(0)  
-#image.close() 
+image.serial_w(0)  
+image.close() 
 image.stack()
